@@ -127,36 +127,197 @@ def get_comics():
     return comics
 
 
-def format_email(comics):
 
-    email_body = "<h2>Here are the new Marvel & DC comics for this week:</h2>\n\n"
+def format_email(comics):
+    # Modern, comic-themed styling
+    email_body = """
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #0d0221;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 800px;
+                margin: 20px auto;
+                background-color: #1a0b2e;
+                border-radius: 10px;
+                box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+                overflow: hidden;
+                position: relative;
+            }
+            .container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    radial-gradient(2px 2px at 20% 30%, white, transparent),
+                    radial-gradient(2px 2px at 60% 70%, #b388ff, transparent),
+                    radial-gradient(1px 1px at 50% 50%, #8a2be2, transparent),
+                    radial-gradient(1px 1px at 80% 10%, #e0b3ff, transparent),
+                    radial-gradient(2px 2px at 90% 60%, #c77dff, transparent),
+                    radial-gradient(1px 1px at 15% 90%, white, transparent),
+                    radial-gradient(1px 1px at 40% 20%, #9d4edd, transparent),
+                    radial-gradient(2px 2px at 70% 85%, white, transparent),
+                    radial-gradient(1px 1px at 25% 60%, #b388ff, transparent),
+                    radial-gradient(1px 1px at 85% 40%, #e0b3ff, transparent);
+                background-size: 200% 200%;
+                background-position: 0% 0%;
+                pointer-events: none;
+                opacity: 0.6;
+                z-index: 1;
+            }
+            .header {
+                background: linear-gradient(135deg, #3c0f70 0%, #1a0033 100%);
+                color: #ffffff;
+                padding: 30px;
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+                text-shadow: 0 1px 0 #c77dff, 0 2px 0 #9d4edd, 0 3px 0 #7b2cbf, 0 4px 5px rgba(0,0,0,0.5);
+                color: #e0b3ff;
+                background: linear-gradient(to bottom, #ffffff 0%, #e0b3ff 50%, #b388ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .content {
+                padding: 30px;
+                position: relative;
+                z-index: 2;
+            }
+            .volume-section {
+                margin-bottom: 30px;
+                border-left: 4px solid #8a2be2;
+                padding-left: 20px;
+            }
+            .volume-title {
+                color: #ffffff;
+                font-size: 22px;
+                margin-bottom: 15px;
+                font-weight: bold;
+                text-shadow: 0 1px 0 #9d4edd, 0 2px 0 #7b2cbf, 0 3px 3px rgba(0,0,0,0.4);
+                background: linear-gradient(to bottom, #ffffff 0%, #e0b3ff 40%, #b388ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .comic-item {
+                background-color: #16213e;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 4px 12px rgba(138, 43, 226, 0.2);
+                transition: transform 0.2s;
+                border: 1px solid #2d1b69;
+            }
+            .comic-item:hover {
+                transform: translateX(5px);
+            }
+            .comic-image {
+                max-width: 120px;
+                height: auto;
+                border-radius: 5px;
+                margin-right: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                position: relative;
+                z-index: 1;
+            }
+            .comic-details {
+                flex: 1;
+                position: relative;
+                z-index: 1;
+            }
+            .issue-number {
+                color: #ffffff;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                text-shadow: 0 1px 0 #c77dff, 0 2px 2px rgba(0,0,0,0.3);
+                background: linear-gradient(to bottom, #ffffff 0%, #e0b3ff 50%, #c77dff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .release-date {
+                color: #d4d4d4;
+                font-size: 14px;
+            }
+            .footer {
+                background-color: #0d0221;
+                padding: 20px;
+                text-align: center;
+                color: #a0a0a0;
+                font-size: 12px;
+            }
+            .no-comics {
+                text-align: center;
+                padding: 40px;
+                color: #d4d4d4;
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Here are the new Marvel & DC comics for this week:</h1>
+            </div>
+            <div class="content">
+    """
     
     if not comics:
-        email_body+= "<p>No new comics this week.</p>"
-        return email_body
-
-    # Sort comics by volume name
-    comics_by_volume = {}
-    for comic in comics:
-        volume = comic["name"]
-        if volume not in comics_by_volume:
-            comics_by_volume[volume] = []
-        comics_by_volume[volume].append(comic)
-    
-    # Add sorted volumes to email with cover images
-    for volume_name in sorted(comics_by_volume.keys()):
-        email_body += f"<h3>{volume_name}</h3>\n"
-        for comic in comics_by_volume[volume_name]:
-            image_html = ""
-            if comic.get("image_url"):
-                image_html = f'<img src="{comic["image_url"]}" style="max-width: 150px; margin: 10px 0;" /><br/>'
+        email_body += '<div class="no-comics"><p>No new comics this week.</p></div>'
+    else:
+        # Sort comics by volume name
+        comics_by_volume = {}
+        for comic in comics:
+            volume = comic["name"]
+            if volume not in comics_by_volume:
+                comics_by_volume[volume] = []
+            comics_by_volume[volume].append(comic)
+        
+        # Add sorted volumes to email with enhanced styling
+        for volume_name in sorted(comics_by_volume.keys()):
+            email_body += f'<div class="volume-section">\n'
+            email_body += f'<div class="volume-title">{volume_name}</div>\n'
             
-            email_body += f"<div style='margin-bottom: 20px;'>"
-            email_body += image_html
-            email_body += f"<strong>Issue #{comic['issue_number']}</strong> - Release Date: {comic['cover_date']}"
-            email_body += f"</div>\n"
-            email_body += "<hr style='border: 1px solid #ccc; margin: 15px 0;'/>\n"
-
+            for comic in comics_by_volume[volume_name]:
+                email_body += '<div class="comic-item">\n'
+                
+                if comic.get("image_url"):
+                    email_body += f'<img src="{comic["image_url"]}" class="comic-image" alt="{volume_name} cover" />\n'
+                
+                email_body += '<div class="comic-details">\n'
+                email_body += f'<div class="issue-number">Issue #{comic["issue_number"]}</div>\n'
+                email_body += f'<div class="release-date">Release Date: {comic["cover_date"]}</div>\n'
+                email_body += '</div>\n'
+                email_body += '</div>\n'
+            
+            email_body += '</div>\n'
+    
+    email_body += """
+            </div>
+            <div class="footer">
+                Powered by Comic Vine API
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
     return email_body
     
 def send_email(subject, body):
