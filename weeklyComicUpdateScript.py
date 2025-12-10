@@ -87,7 +87,8 @@ def get_comics():
     
     comics=[]
     #  Marvel and DC identifiers
-    marvel_dc_keywords = ["marvel", "dc comics", "batman", "superman", "spider-man", "x-men", "avengers", "fantastic four", "green lantern", "wonder woman", "flash", "captain america","magik","moon knight","wolverine"]
+    # if you looking to sort for certain characters, add them to this list
+    marvel_dc_keywords = ["marvel", "dc comics", "batman", "superman", "spider-man", "x-men", "avengers", "fantastic four", "green lantern", "wonder woman", "flash", "captain america","magik","moon knight","wolverine","Ghost Rider"," Spirits of Violence","Absolute"," Ultimate"]
     
     for issue in results:
         try:
@@ -129,7 +130,7 @@ def get_comics():
 
 
 def format_email(comics):
-    # Modern, comic-themed styling
+    # email styling to make it look nice 
     email_body = """
     <html>
     <head>
@@ -289,7 +290,7 @@ def format_email(comics):
                 comics_by_volume[volume] = []
             comics_by_volume[volume].append(comic)
         
-        # Add sorted volumes to email with enhanced styling
+        # Add sorted volumes to email
         for volume_name in sorted(comics_by_volume.keys()):
             email_body += f'<div class="volume-section">\n'
             email_body += f'<div class="volume-title">{volume_name}</div>\n'
